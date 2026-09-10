@@ -3,161 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Ranking Podcast 2026">
-  <meta name="description" content="Candidaturas del Ranking Podcast 2026 de Marketing4eCommerce.">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <title>Candidaturas Ranking Podcast 2026 | Marketing4eCommerce</title>
-  <style>
-    :root{--text:#111827;--muted:#6b7280;--line:#e5e7eb;--bg:#f7f7f8;--card:#fff;--accent:#111827;--accent2:#f3f4f6}
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.45}
-    .wrap{max-width:980px;margin:0 auto;padding:28px 18px 44px}
-    header{text-align:center;padding:20px 0 20px}
-    .eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-    h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.08;margin:0 0 10px;letter-spacing:-.03em}
-    .intro{max-width:640px;margin:0 auto;color:var(--muted);font-size:1rem}
-    .toolbar{position:sticky;top:0;z-index:10;background:rgba(247,247,248,.92);backdrop-filter:blur(10px);padding:12px 0}
-    .search{width:100%;border:1px solid #d1d5db;border-radius:14px;padding:14px 16px;font-size:16px;outline:none;background:#fff}
-    .search:focus{border-color:#9ca3af;box-shadow:0 0 0 3px rgba(17,24,39,.08)}
-    .count{font-size:.85rem;color:var(--muted);margin:10px 2px 14px}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .item{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
-    .item:hover{transform:translateY(-1px);border-color:#d1d5db;box-shadow:0 3px 12px rgba(0,0,0,.05)}
-    .num{flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:var(--accent2);display:grid;place-items:center;font-size:.78rem;font-weight:700;color:#374151}
-    .txt{min-width:0}
-    .name{display:block;font-weight:650;font-size:.95rem;line-height:1.2}
-    .author{display:block;color:var(--muted);font-size:.78rem;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .arrow{margin-left:auto;color:#9ca3af;font-size:1.1rem}
-    .cta{display:flex;justify-content:center;padding:24px 0 10px}
-    .vote{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 24px;background:#111827;color:#fff;border-radius:14px;text-decoration:none;font-weight:750;box-shadow:0 5px 18px rgba(17,24,39,.18)}
-    .vote:hover{background:#000}
-    .empty{display:none;text-align:center;color:var(--muted);padding:32px 8px}
-    footer{text-align:center;color:#9ca3af;font-size:.78rem;padding-top:26px}
-    @media (max-width:700px){.grid{grid-template-columns:1fr}.wrap{padding-left:14px;padding-right:14px}.item{padding:14px 13px}.name{font-size:.98rem}.author{font-size:.8rem}}
-  </style>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Podcasts 2026">
+  <meta name="description" content="Directorio personal de podcasts de marketing, negocio, SEO y tecnología.">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png">
+  <link rel="stylesheet" href="./style.css">
+  <title>Podcasts 2026</title>
 </head>
 <body>
-  <main class="wrap">
-    <header>
-      <div class="eyebrow">Marketing4eCommerce</div>
-      <h1>Candidaturas Ranking Podcast 2026</h1>
-      <p class="intro">¡Ayúdanos a seleccionar los mejores podcast de marketing y eCommerce en español!</p>
-    </header>
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <h1>Podcasts 2026</h1>
+      <p class="count" aria-live="polite"><span id="totalCount">0</span> podcasts</p>
+    </div>
+  </header>
 
-    <section class="toolbar" aria-label="Buscar candidaturas">
-      <input id="search" class="search" type="search" placeholder="Buscar un podcast…" autocomplete="off" aria-label="Buscar un podcast">
+  <main class="container">
+    <section class="controls" aria-label="Buscar y filtrar">
+      <label class="search-box">
+        <span class="sr-only">Buscar podcasts</span>
+        <input id="searchInput" type="search" placeholder="Buscar por nombre o autor…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+        <button id="clearSearch" class="icon-btn" type="button" aria-label="Borrar búsqueda" hidden>×</button>
+      </label>
+
+      <div class="filter-row">
+        <label class="select-wrap">
+          <span class="sr-only">Filtrar por plataforma</span>
+          <select id="platformFilter">
+            <option value="all">Todas las plataformas</option>
+          </select>
+        </label>
+
+        <button id="favoritesToggle" class="toggle-btn" type="button" aria-pressed="false">
+          <span aria-hidden="true">★</span>
+          <span>Solo favoritos</span>
+        </button>
+      </div>
     </section>
 
-    <div id="count" class="count"></div>
-    <section id="list" class="grid" aria-live="polite"></section>
-    <div id="empty" class="empty">No hemos encontrado ninguna candidatura con esa búsqueda.</div>
+    <p id="resultsMeta" class="results-meta" aria-live="polite"></p>
+    <div id="podcastGrid" class="podcast-grid"></div>
 
-    <div class="cta">
-      <a class="vote" href="https://tally.so/embed/ZjrPG5?alignLeft=1&dynamicHeight=1&hideTitle=1&transparentBackground=1" id="vote" target="_blank" rel="noopener noreferrer">¡Quiero votar!</a>
-    </div>
+    <section id="emptyState" class="empty-state" hidden>
+      <p class="empty-icon" aria-hidden="true">⌕</p>
+      <h2 id="emptyTitle">No hay resultados</h2>
+      <p id="emptyText">Prueba con otro término o quita los filtros activos.</p>
+      <button id="resetFilters" class="reset-btn" type="button">Limpiar filtros</button>
+    </section>
 
-    <footer>Ranking Podcast 2026 · Marketing4eCommerce</footer>
+    <noscript>
+      <p class="noscript">Esta página necesita JavaScript para cargar el directorio.</p>
+    </noscript>
   </main>
 
-<script>
-const podcasts = [
-  ["1,99 Retail Podcast", "Carlos Vila y Jorge Farré", "https://199retailpodcast.com/"],
-  ["366º - El podcast de Bisiesto Estudio", "Bisiesto", "https://open.spotify.com/show/63oosx7QwIYQ9C162I39Lx"],
-  ["Al Final del Funnel", "Caronte Studio", "https://open.spotify.com/show/7DyKxnhEBe0v3LgFjmDvvO"],
-  ["Alas de innovación", "Montse Labiaga", "https://open.spotify.com/show/5USuAbkN1wafZKCYrvrsz8"],
-  ["Así empecé", "Beltrán Espinosa de los Monteros", "https://podcasts.apple.com/es/podcast/as%C3%AD-empec%C3%A9/id1553690196"],
-  ["Así lo hacemos podcast", "Joan Boluda y Álex Martínez", "https://asilohacemos.com/"],
-  ["BIG Podcast", "BIGSEO", "https://open.spotify.com/show/6rJKVGZ9k3gZ18FPweI3j4"],
-  ["Boss Tank", "Álvaro Rodríguez Ferrero", "https://open.spotify.com/show/0Axsz7z8PrkX9jWRIqWwlJ"],
-  ["Campamento Web (SEO & Marketing Digital)", "Emilio García", "https://open.spotify.com/show/3tZyvQDg1Vaa43MX3CQDw1?dlsi=e6b385df949848ed&nd=1&si=8890fe7780c44e94"],
-  ["Caviar Online: Comunicación y Marketing Digital", "Carles Fité y Joan Martín", "https://castbox.fm/channel/id3637636?country=es"],
-  ["Cracks Podcast con Oso Trava", "con Oso Trava", "https://open.spotify.com/show/3DhKkwcA6Pkl6s6xI1m9Im"],
-  ["Cómo Diferenciarse", "Toni Colom", "https://tonicolom.ws/podcast/"],
-  ["Descifrando Agencias", "Mr. Landon Agencia / Carlos Herrero", "https://mrlandon.com/podcast/"],
-  ["Disruptivo", "Juan del Cerro", "https://open.spotify.com/show/7CBtqGMLdthLZw7NqnBYQZ"],
-  ["Ecommerce Rockstars by AMVO", "By AMVO", "https://open.spotify.com/show/2sWh4kEjNNKNzG9uSeXYT6?dlsi=7bc3992f90014c41&nd=1&si=513edf3c2e7d497c"],
-  ["Ecommerce Talks", "Llorent Palomas - Doofinder", "https://open.spotify.com/show/13o4NrTsyyuHf7RiYmxWwi"],
-  ["Ecosistema Ecommerce", "Javier López", "https://ecosistemaecommerce.com/podcast-2/"],
-  ["El Podcast de Aire", "Aire", "https://open.spotify.com/show/033kqiwe8n2GMAS8ZlrEHB"],
-  ["El podcast de Instagram", "Borja Girón", "https://www.ivoox.com/en/podcast-podcast-instagram_sq_f1625173_1.html"],
-  ["El Podcast de Webpositer", "Webpositer", "https://open.spotify.com/show/7J1anByepYLcXC2OSKxy5L"],
-  ["eLíderes Podcast", "eCommerce Institute", "https://open.spotify.com/show/5cdC7OCKPiytnnGuo1VhjO"],
-  ["Escalando agencias", "Miguel Sanz y Corti", "https://open.spotify.com/show/7DESCaj5vTN83yNC1IEMZs"],
-  ["Estrategias de Marketing", "Marcos de la Vega", "https://www.ivoox.com/en/podcast-estrategias-marketing_sq_f1681063_1.html"],
-  ["Fika Café", "Kreab España", "https://open.spotify.com/show/53VP3c8Gjg5KY2uhxEIzbr"],
-  ["Grandes Aprendizajes", "Borja Girón", "https://open.spotify.com/show/701vmriMz4MPEiDdNBnef0"],
-  ["Growth y negocios", "Product Hackers", "https://www.ivoox.com/en/podcast-growth-negocios-128640-product-hackers_sq_f1422367_1.html"],
-  ["GTM Room", "Andrés Barreto y Miguel Cabrera", "https://open.spotify.com/show/033osErWZqW1CmTMkGpinP"],
-  ["Haciendo cosas", "Rubén Alonso", "https://open.spotify.com/show/084t8Ixo5Vx27SXT1DamUA"],
-  ["HeavyMental", "Javier Recuenco, Miguel López y David Alayón", "https://open.spotify.com/show/24VPDkpyEDDbbIQ8xywpPr?nd=1&si=_iM0OytKR5u99_khAdwxgw"],
-  ["IA & Humanismo & Marketing Digital (y off-topics)", "Juan Merodio", "https://open.spotify.com/show/2ubXOBWm68PmnVOQZYeGlv"],
-  ["Instituto Digital de los Negocios (TEKDI)", "TEKDI Institute", "https://open.spotify.com/show/2SiXdomPx2TcWDUDmQ5bPQ"],
-  ["Inteligencia Artificial para Emprender", "Borja Girón", "https://open.spotify.com/show/2eTrGyVLWIH14rG3ctGd4t"],
-  ["kaizen, con Jaime Rodríguez de Santiago", "Jaime Rodríguez de Santiago", "https://www.ivoox.com/en/podcast-kaizen-jaime-rodriguez-santiago_sq_f1649433_1.html"],
-  ["La Tertul‑IA: Inteligencia Artificial y más", "Lu Martín, Frankie Carrero y Corti", "https://podcasts.apple.com/gb/podcast/la-tertul-ia-inteligencia-artificial-y-m%C3%A1s/id1723736263"],
-  ["Las Preguntas Correctas", "Marta Gil", "https://open.spotify.com/show/033fV0fIW3eeqlXoYEzciR"],
-  ["Libros para Emprendedores", "Luis Ramos", "https://open.spotify.com/show/0qXuVDCYF8HvkEynJwHULb"],
-  ["Life on Mars", "Àlex Rodríguez / Mars Based", "https://open.spotify.com/show/0OtwB1eJI2PlzRwhSMdjW3"],
-  ["Linking", "Carlos Hernández Valero / Acceseo", "https://www.acceseo.com/linking-podcast"],
-  ["Marketing Diario", "Jordi San Idelfonso", "https://open.spotify.com/show/2VzUCKwaKZWqdxMGO3OdSk"],
-  ["Marketing Digital para podcast", "Borja Girón", "https://open.spotify.com/show/2FZZyNZFHrlrVYIPIVlz8M"],
-  ["Marketing Digital, con Borja Girón", "Borja Girón", "https://www.ivoox.com/en/podcast-marketing-digital_sq_f1448689_1.html"],
-  ["Marketing online", "Joan Boluda", "https://boluda.com/podcast/"],
-  ["Marketing para gente como uno", "Carlos Malfatti", "https://open.spotify.com/show/033jCtb7HujRpN674xcnfz?dlsi=272ed4ad789f47fa&go=1&nd=1&sp_cid=e6db63c845d2746143fbcac8c61fe003&utm_medium=desktop&utm_source=embed_player_p"],
-  ["Marketing Radical", "Borja Girón", "https://open.spotify.com/show/6ggkshmSlcZZNlKkk1O4lw"],
-  ["Media Power Podcast", "Jaime Cabezas", "https://open.spotify.com/show/5AMmigUL4Lj6NUJ6Oj9h2G"],
-  ["MENTOR360", "Luis Ramos", "https://open.spotify.com/show/5heHksT8rReQUXitfF1MEs"],
-  ["Negocios Locales, con Laura Alfonso", "Laura Alfonso", "https://open.spotify.com/show/1OyKaiTZ0PEHzaS1oz0Ei7"],
-  ["Neo Talks", "Atrevia", "https://open.spotify.com/show/6KAw3eX0qnjqdOHCPuc2bA"],
-  ["No es asunto vuestro", "Víctor Correal", "https://www.ivoox.com/en/podcast-no-es-asunto-vuestro_sq_f1270293_1.html"],
-  ["Nomu Labs Podcast", "Juanma Sáez", "https://open.spotify.com/show/0dHpOWBl4yb2UX9sSs3YxX"],
-  ["Notas de Marketing", "Iván Blanco", "https://open.spotify.com/show/6Wct5wnFSsIf4ZCi2Q3Ta7"],
-  ["Noticias Marketing", "Borja Girón", "https://podcasts.apple.com/es/podcast/noticias-marketing/id1664547344"],
-  ["Open | El podcast de Pepe Martín", "García Minimalism Brand. Pepe Martín", "https://open.spotify.com/show/0otgKudTpXDHxtYPkiNCHy"],
-  ["Paradisers", "Marketing Paradise", "https://open.spotify.com/show/56Y3LRLYwVYueSMam7M6lj"],
-  ["Podcast de Itnig: Historias de startups", "Bernat Farrero y Jordi Romero.", "https://open.spotify.com/show/75ao7vbM0cH7SKIsyYN3iZ"],
-  ["PPC Cast", "Luis Flores y Albert Roig", "https://ppccast.com/"],
-  ["Productividad Máxima, con Borja Girón", "Borja Girón", "https://open.spotify.com/show/6DlT9Dz7txsDV04ord5YgV"],
-  ["Sabandijers FM", "Ángel Rodríguez y Rubén Alonso", "https://sabandijers.club/fm/"],
-  ["Seedrocket Startup School", "SeedRocket", "https://www.ivoox.com/en/podcast-seedrocket_sq_f1707296_1.html"],
-  ["SEO para Google", "Borja Girón", "https://podcasts.apple.com/es/podcast/seo-para-google/id1114403819"],
-  ["SEO y SEM con Luis Revuelto", "Luis Revuelto", "https://open.spotify.com/show/6uUjb1ch4qhtIpF5oZAvVQ"],
-  ["The Big Brand Club", "Soluble e Iberian Media", "https://open.spotify.com/show/4cDMyfTl3YfJKyVraMTac5"],
-  ["The Inner Circle", "Konvo AI (Guillem Oliva y Gonzalo Balcells)", "https://theinnercircle-links.vercel.app/"],
-  ["The Side B Dialogues", "Jimena Santillan y Verónica Diaz", "https://open.spotify.com/show/1zhjmk9vXUtM7H8L7HpWPn"],
-  ["Triunfa con tu blog", "Borja Girón", "https://open.spotify.com/show/3xn8gbOIL14BX4vxJgc8j0"],
-  ["Vilma OS", "Vilma Nuñez", "https://open.spotify.com/show/0GejOPh15VUdbxgD1panVL"],
-  ["WordPress Semanal", "Gonzalo Navarro", "https://castbox.fm/channel/WordPress-Semanal-id380008?country=es"],
-  ["Yo también vendo a empresas", "David Navas", "https://www.ivoox.com/en/podcast-yo-tambien-vendo-a-empresas-el-podcast_sq_f1658502_1.html"]
-];
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>Copia local independiente</span>
+      <span id="offlineStatus" aria-live="polite"></span>
+    </div>
+  </footer>
 
-const list = document.getElementById('list');
-const search = document.getElementById('search');
-const count = document.getElementById('count');
-const empty = document.getElementById('empty');
-
-function render(filter='') {
-  const f = filter.trim().toLocaleLowerCase('es');
-  const filtered = podcasts.filter(([name, author]) => `${name} ${author}`.toLocaleLowerCase('es').includes(f));
-  list.innerHTML = filtered.map(([name, author, url], i) => {
-    const number = String(podcasts.indexOf(podcasts.find(p => p[0]===name))+1).padStart(2,'0');
-    return `<a class="item" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="Abrir ${name}">
-      <span class="num">${number}</span>
-      <span class="txt"><span class="name">${escapeHtml(name)}</span><span class="author">${escapeHtml(author)}</span></span>
-      <span class="arrow" aria-hidden="true">›</span>
-    </a>`;
-  }).join('');
-  count.textContent = f ? `${filtered.length} candidatura${filtered.length===1?'':'s'} encontrada${filtered.length===1?'':'s'}` : `${podcasts.length} candidaturas`;
-  empty.style.display = filtered.length ? 'none' : 'block';
-}
-function escapeHtml(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
-search.addEventListener('input', e => render(e.target.value));
-render();
-
-</script>
+  <script src="./app.js" defer></script>
 </body>
 </html>
