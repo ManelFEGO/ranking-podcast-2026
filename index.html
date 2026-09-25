@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Podcasts 2026">
-  <meta name="description" content="Directorio personal de podcasts de marketing, negocio, SEO y tecnología.">
+  <meta name="description" content="Directorio personal de podcasts de marketing, eCommerce, SEO y negocio digital, agrupados por temática.">
   <link rel="manifest" href="./manifest.json">
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
@@ -28,7 +28,7 @@
     <section class="controls" aria-label="Buscar y filtrar">
       <label class="search-box">
         <span class="sr-only">Buscar podcasts</span>
-        <input id="searchInput" type="search" placeholder="Buscar por nombre o autor…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+        <input id="searchInput" type="search" placeholder="Buscar por nombre, autor o temática…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
         <button id="clearSearch" class="icon-btn" type="button" aria-label="Borrar búsqueda" hidden>×</button>
       </label>
 
@@ -45,10 +45,16 @@
           <span>Solo favoritos</span>
         </button>
       </div>
+
+      <div class="chip-row" role="group" aria-label="Vista">
+        <button id="topToggle" class="chip" type="button" aria-pressed="false">Solo el top 50</button>
+        <button id="expandAll" class="chip" type="button">Abrir todo</button>
+        <button id="collapseAll" class="chip" type="button">Cerrar todo</button>
+      </div>
     </section>
 
     <p id="resultsMeta" class="results-meta" aria-live="polite"></p>
-    <div id="podcastGrid" class="podcast-grid"></div>
+    <div id="sections"></div>
 
     <section id="emptyState" class="empty-state" hidden>
       <p class="empty-icon" aria-hidden="true">⌕</p>
@@ -64,8 +70,8 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <span>Copia local independiente</span>
-      <span id="offlineStatus" aria-live="polite"></span>
+      <p class="footnote">Clasificación temática propia. Las posiciones del top 50 son del Ranking Podcast 2026 de Marketing4eCommerce.</p>
+      <p id="offlineStatus" class="footnote" aria-live="polite"></p>
     </div>
   </footer>
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Verifica los enlaces de data/podcasts.json.
-//   node tools/check-links.mjs                 -> tabla en pantalla
-//   node tools/check-links.mjs > enlaces.md    -> guarda la tabla
+//   node tools/check-links.mjs                 tabla en pantalla
+//   node tools/check-links.mjs > enlaces.md    guarda la tabla
 // Requiere Node 18 o superior. Sin dependencias.
 
 import fs from "node:fs/promises";
@@ -9,7 +9,7 @@ import fs from "node:fs/promises";
 const CONCURRENCY = 8;
 const TIMEOUT_MS = 12000;
 
-// Spotify, Apple y varios CDN devuelven 403 a agentes que no parecen un navegador.
+// Spotify, Apple y varios CDN devuelven 403 a agentes que no parecen navegador.
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 " +
            "(KHTML, like Gecko) Version/17.4 Safari/605.1.15";
 
@@ -37,11 +37,7 @@ async function check(url) {
     const head = await request(url, "HEAD");
     // Muchos servidores no implementan bien HEAD: se reintenta con GET.
     if (head.code === 405 || head.code === 403 || head.code >= 500) {
-      try {
-        return await request(url, "GET");
-      } catch {
-        return head;
-      }
+      try { return await request(url, "GET"); } catch { return head; }
     }
     return head;
   } catch {
@@ -53,22 +49,21 @@ async function check(url) {
   }
 }
 
-async function runPool(items, size, worker) {
+async function pool(items, size, worker) {
   const results = new Array(items.length);
   let next = 0;
-  const runners = Array.from({ length: Math.min(size, items.length) }, async () => {
+  await Promise.all(Array.from({ length: Math.min(size, items.length) }, async () => {
     while (next < items.length) {
       const index = next++;
       results[index] = await worker(items[index], index);
     }
-  });
-  await Promise.all(runners);
+  }));
   return results;
 }
 
 const clean = value => String(value).replace(/\s+/g, " ").replace(/\|/g, "/").trim();
 
-const results = await runPool(podcasts, CONCURRENCY, async podcast => ({
+const results = await pool(podcasts, CONCURRENCY, async podcast => ({
   podcast,
   ...(await check(podcast.enlace))
 }));

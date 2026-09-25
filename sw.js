@@ -1,6 +1,6 @@
-// Sube este número cada vez que edites data/podcasts.json o cualquier archivo
-// de la lista CORE_ASSETS. Es lo que fuerza al iPhone a descargar la versión nueva.
-const CACHE_VERSION = "podcasts-2026-v2";
+// Sube este número cada vez que edites index.html, style.css, app.js o añadas
+// portadas nuevas. Es lo que fuerza al iPhone a descargar la versión nueva.
+const CACHE_VERSION = "podcasts-2026-v3";
 
 const CORE_ASSETS = [
   "./",
@@ -31,12 +31,10 @@ self.addEventListener("activate", event => {
   );
 });
 
-function isCacheable(response) {
-  return response && response.ok && response.type === "basic";
-}
+const isCacheable = response => response && response.ok && response.type === "basic";
 
-// Datos: red primero, caché como red de seguridad.
-// Así, si actualizas el JSON y subes el cambio, lo ves en cuanto haya conexión.
+// Datos: red primero, caché como red de seguridad. Así, si actualizas el JSON
+// y lo subes, lo ves en cuanto haya conexión.
 async function networkFirst(request) {
   const cache = await caches.open(CACHE_VERSION);
   try {
@@ -76,9 +74,7 @@ self.addEventListener("fetch", event => {
   }
 
   if (request.mode === "navigate") {
-    event.respondWith(
-      networkFirst(request).catch(() => caches.match("./index.html"))
-    );
+    event.respondWith(networkFirst(request).catch(() => caches.match("./index.html")));
     return;
   }
 

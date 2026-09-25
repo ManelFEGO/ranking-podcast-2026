@@ -6,11 +6,11 @@
 //
 // Cómo busca cada portada, en este orden:
 //   1. Enlaces de Apple Podcasts -> ficha exacta en la base de datos de Apple (por ID).
-//   2. Los demás -> búsqueda por nombre en esa misma base de datos, aceptando
-//      solo coincidencias fiables de nombre. Si duda, no la coge.
+//   2. Los demás -> búsqueda por nombre en esa misma base, aceptando solo
+//      coincidencias fiables de nombre. Si duda, no la coge.
 //   3. Si Apple no lo tiene -> etiqueta og:image de la página de destino.
 //
-// Nada pasa por lovable.app. Requiere Node 18 o superior. Sin dependencias.
+// Requiere Node 18 o superior. Sin dependencias.
 // En macOS reescala a 400x400 con `sips`, que ya viene instalado.
 
 import fs from "node:fs/promises";
@@ -53,7 +53,7 @@ function request(url, extraHeaders = {}) {
 }
 
 const normalize = value => String(value || "")
-  .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  .normalize("NFD").replace(/[̀-ͯ]/g, "")
   .toLowerCase()
   .replace(/[^a-z0-9]+/g, " ")
   .trim();
@@ -65,8 +65,7 @@ function isConfidentMatch(wanted, candidate) {
   const b = normalize(candidate);
   if (!a || !b) return false;
   if (a === b) return true;
-  const shortest = Math.min(a.length, b.length);
-  if (shortest < 8) return false;
+  if (Math.min(a.length, b.length) < 8) return false;
   return a.startsWith(b) || b.startsWith(a);
 }
 
@@ -80,7 +79,7 @@ async function appleApi(url) {
 
   const response = await request(url, { Accept: "application/json" });
   if (response.status === 403 || response.status === 429) {
-    await sleep(30000);                       // nos hemos pasado de ritmo: esperar y reintentar
+    await sleep(30000);                       // ritmo excedido: esperar y reintentar
     lastAppleCall = Date.now();
     const retry = await request(url, { Accept: "application/json" });
     if (!retry.ok) throw new Error(`Apple ${retry.status}`);
@@ -95,8 +94,9 @@ async function fromAppleId(link) {
   if (!id) return null;
   const payload = await appleApi(`https://itunes.apple.com/lookup?id=${id}&entity=podcast`);
   const item = payload?.results?.[0];
-  if (!item?.artworkUrl600 && !item?.artworkUrl100) return null;
-  return { url: big(item.artworkUrl600 || item.artworkUrl100), via: `Apple id${id}`, match: item.collectionName };
+  const art = item?.artworkUrl600 || item?.artworkUrl100;
+  if (!art) return null;
+  return { url: big(art), via: `Apple id${id}`, match: item.collectionName };
 }
 
 async function fromAppleSearch(podcast, country) {
@@ -104,10 +104,9 @@ async function fromAppleSearch(podcast, country) {
   const payload = await appleApi(
     `https://itunes.apple.com/search?term=${term}&entity=podcast&country=${country}&limit=10`
   );
-  const results = payload?.results || [];
-  const hit = results.find(r => isConfidentMatch(podcast.nombre, r.collectionName || r.trackName));
-  if (!hit) return null;
-  const art = hit.artworkUrl600 || hit.artworkUrl100;
+  const hit = (payload?.results || [])
+    .find(r => isConfidentMatch(podcast.nombre, r.collectionName || r.trackName));
+  const art = hit?.artworkUrl600 || hit?.artworkUrl100;
   if (!art) return null;
   return { url: big(art), via: `Apple búsqueda ${country}`, match: hit.collectionName || hit.trackName };
 }
@@ -165,9 +164,8 @@ const MAGIC = [
   { ext: ".webp", bytes: [0x52, 0x49, 0x46, 0x46] }
 ];
 
-function imageExtension(buffer) {
-  return MAGIC.find(m => m.bytes.every((b, i) => buffer[i] === b))?.ext || "";
-}
+const imageExtension = buffer =>
+  MAGIC.find(m => m.bytes.every((b, i) => buffer[i] === b))?.ext || "";
 
 let sipsReady = null;
 async function hasSips() {
@@ -215,7 +213,10 @@ async function pool(items, size, worker) {
 
 const pending = data.podcasts.filter(p => force || !p.portada);
 console.log(`\nPortadas por buscar: ${pending.length} de ${data.podcasts.length}`);
-console.log(`Tarda unos ${Math.ceil(pending.length * APPLE_PAUSE_MS / 60000)} minutos: Apple limita el ritmo de consultas.\n`);
+if (pending.length > 5) {
+  console.log(`Tarda unos ${Math.ceil(pending.length * APPLE_PAUSE_MS / 60000)} minutos: Apple limita el ritmo de consultas.`);
+}
+console.log("");
 
 const resolved = [];
 const failures = [];
@@ -232,7 +233,7 @@ for (const [index, podcast] of pending.entries()) {
   }
 }
 
-console.log(`\nDescargando ${resolved.length} imágenes...`);
+if (resolved.length) console.log(`\nDescargando ${resolved.length} imágenes...`);
 let saved = 0;
 await pool(resolved, DOWNLOAD_CONCURRENCY, async ([podcast, found]) => {
   const result = await download(podcast, found).catch(e => ({ error: e?.message || "fallo" }));
@@ -250,12 +251,11 @@ await pool(resolved, DOWNLOAD_CONCURRENCY, async ([podcast, found]) => {
 await fs.writeFile(jsonFile, JSON.stringify(data, null, 2) + "\n", "utf8");
 
 console.log(`\n${"=".repeat(52)}`);
-console.log(`Portadas guardadas: ${saved}`);
-console.log(`Sin portada: ${data.podcasts.filter(p => !p.portada).length}`);
+console.log(`Portadas guardadas en esta pasada: ${saved}`);
+console.log(`Total con portada: ${data.podcasts.filter(p => p.portada).length} de ${data.podcasts.length}`);
 console.log(`Carpeta: ${coversDir}`);
 if (failures.length) {
   console.log(`\nSe quedan con el cuadro de iniciales:`);
   for (const [podcast, reason] of failures) console.log(`  · ${podcast.nombre} — ${reason}`);
 }
-if (saved) console.log(`\nSube CACHE_VERSION en sw.js antes de publicar.`);
 console.log("");
